@@ -64,9 +64,10 @@
         const sysStatus = document.getElementById('sys-status');
         const voiceStatus = document.getElementById('voice-status');
         let recognition;
-        let isSpeaking = false; // Prevents the feedback loop
+        let isSpeaking = false;
+        let cooldownUntil = 0; // Blocks echo immediately after speech ends
 
-        // 1. Initialize Camera Feed for Mobile HTTPS / WebCam
+        // 1. Initialize Camera Feed
         async function initCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -79,7 +80,7 @@
         }
         initCamera();
 
-        // 2. Text-to-Speech Output with Feedback Protection
+        // 2. Text-to-Speech Output with Cooldown Buffer
         function speak(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -88,11 +89,13 @@
                 speech.rate = 1.05;
                 speech.pitch = 0.95;
 
-                isSpeaking = true; // Lock listening while talking
+                isSpeaking = true;
                 voiceStatus.innerText = "VOICE: SPEAKING...";
 
                 speech.onend = () => {
-                    isSpeaking = false; // Unlock listening after she finishes
+                    isSpeaking = false;
+                    // Keep a 3-second buffer to swallow lingering speaker echo on laptops
+                    cooldownUntil = Date.now() + 3000; 
                     voiceStatus.innerText = "VOICE: LISTENING...";
                 };
 
@@ -107,7 +110,6 @@
 
             sysStatus.innerText = `ANALYZING: "${command.toUpperCase()}"`;
 
-            // Core Intent & Command Triggers
             if (text.includes("status") || text.includes("diagnostics")) {
                 responseText = "All systems operational, Chandresh. Camera feed and neural links are fully online.";
             } 
@@ -131,14 +133,13 @@
                 responseText = `Understood, Chandresh. Analyzing your input regarding ${command}. Parameters are nominal.`;
             }
 
-            // Update HUD UI and execute voice response
             setTimeout(() => {
                 sysStatus.innerText = `E.D.I.T.H.: ${responseText}`;
                 speak(responseText);
             }, 300);
         }
 
-        // 4. Continuous Voice Recognition Engine with Loop Prevention
+        // 4. Voice Recognition with Cooldown Check
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
@@ -147,8 +148,8 @@
             recognition.lang = 'en-US';
 
             recognition.onresult = (event) => {
-                // Ignore audio input if E.D.I.T.H. is currently speaking
-                if (isSpeaking) return;
+                // Ignore if currently speaking OR if we are inside the 3-second echo cooldown window
+                if (isSpeaking || Date.now() < cooldownUntil) return;
 
                 const transcript = event.results[event.results.length - 1][0].transcript.trim();
                 console.log("Voice Command Captured:", transcript);
@@ -161,8 +162,7 @@
 
             recognition.onend = () => {
                 try {
-                    // Only restart if she is not currently speaking
-                    if (!isSpeaking) {
+                    if (!isSpeaking && Date.now() >= cooldownUntil) {
                         recognition.start();
                     }
                 } catch (e) {
