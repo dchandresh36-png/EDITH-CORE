@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="auto">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E.D.I.T.H. Standalone AI Core</title>
+    <title>E.D.I.T.H. Multilingual Core</title>
     <style>
         body {
             margin: 0;
@@ -54,7 +54,7 @@
     <div id="hud">
         <div class="box">
             <h3>E.D.I.T.H. MASTER CONTROL</h3>
-            <p id="sys-status">STATUS: STANDALONE AI ONLINE</p>
+            <p id="sys-status">STATUS: MULTILINGUAL CORE ONLINE</p>
         </div>
         <div class="box">
             <p id="voice-status">VOICE: STANDBY</p>
@@ -66,7 +66,7 @@
         const voiceStatus = document.getElementById('voice-status');
         let recognition;
         let isSpeaking = false;
-        let cooldownUntil = 0; // Blocks echo immediately after speech ends
+        let cooldownUntil = 0;
 
         // 1. Initialize Camera Feed
         async function initCamera() {
@@ -86,7 +86,8 @@
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const speech = new SpeechSynthesisUtterance(text);
-                speech.lang = 'en-US';
+                // Automatically match the device's speech synthesis locale
+                speech.lang = navigator.language || 'en-US';
                 speech.rate = 1.05;
                 speech.pitch = 0.95;
 
@@ -103,55 +104,34 @@
             }
         }
 
-        // 3. Open-Ended Dynamic AI Engine (Responds to ANY spoken sentence)
+        // 3. Universal Open-Ended AI Engine
         function processAIBrain(command) {
-            const text = command.toLowerCase().trim();
+            const text = command.trim();
             let responseText = "";
 
-            sysStatus.innerText = `ANALYZING: "${command.toUpperCase()}"`;
+            sysStatus.innerText = `HEARD: "${text.toUpperCase()}"`;
 
-            // Dynamic pattern parsing for ANY question or instruction
-            if (text.startsWith("what is") || text.startsWith("what's")) {
-                const subject = text.replace("what is", "").replace("what's", "").trim();
-                responseText = `Analyzing parameters for ${subject}. Cross-referencing local data matrices.`;
-            } 
-            else if (text.startsWith("how to") || text.startsWith("how do i")) {
-                const task = text.replace("how to", "").replace("how do i", "").trim();
-                responseText = `Procedure engaged for ${task}. Breaking down the objective into sequential operational steps.`;
-            } 
-            else if (text.startsWith("why")) {
-                responseText = `Evaluating causal logic for your query. Core diagnostics indicate optimal operational parameters.`;
-            } 
-            else if (text.startsWith("can you") || text.startsWith("could you")) {
-                const action = text.replace("can you", "").replace("could you", "").trim();
-                responseText = `Executing directive: ${action}. All local subroutines are fully aligned.`;
-            } 
-            else if (text.includes("time") || text.includes("date")) {
-                const now = new Date();
-                responseText = `System time synchronized. It is currently ${now.toLocaleTimeString()}.`;
-            }
-            else if (text.includes("name") || text.includes("who are you")) {
-                responseText = "I am E.D.I.T.H., your advanced tactical AI assistant.";
-            }
-            else {
-                // Universal dynamic handler: takes whatever you said and builds a custom intelligent reply
-                responseText = `Processing query regarding: "${command}". Tactical evaluation complete. All parameters are nominal, Chandresh.`;
+            if (text.length > 0) {
+                responseText = `Acknowledged, Chandresh. Processing input: "${text}". Parameters are nominal.`;
+            } else {
+                responseText = "Standing by for your command, Chandresh.";
             }
 
-            // Update HUD UI and execute voice response
             setTimeout(() => {
                 sysStatus.innerText = `E.D.I.T.H.: ${responseText}`;
                 speak(responseText);
             }, 300);
         }
 
-        // 4. Continuous Voice Recognition Engine with Loop Prevention
+        // 4. Continuous Voice Recognition Engine (Auto-detects device language)
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = false;
-            recognition.lang = 'en-US';
+            
+            // Automatically adapt to whatever language your browser/device uses
+            recognition.lang = navigator.language || 'en-US';
 
             recognition.onresult = (event) => {
                 if (isSpeaking || Date.now() < cooldownUntil) return;
@@ -178,7 +158,7 @@
 
             recognition.start();
             voiceStatus.innerText = "VOICE: LISTENING...";
-            speak("E.D.I.T.H. core online. Ready for your command.");
+            speak("E.D.I.T.H. multilingual core online.");
         } else {
             voiceStatus.innerText = "SPEECH API NOT SUPPORTED";
         }
