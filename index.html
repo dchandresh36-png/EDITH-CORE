@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E.D.I.T.H. Master Control</title>
+    <title>E.D.I.T.H. Standalone AI Core</title>
     <style>
         body {
             margin: 0;
@@ -37,22 +37,23 @@
         }
         .box {
             border: 1px solid #00ffff;
-            padding: 10px;
+            padding: 12px;
             background: rgba(0, 255, 255, 0.05);
-            max-width: 350px;
+            max-width: 380px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
         }
     </style>
 </head>
 <body>
 
-    <!-- Camera Feed Background -->
+    <!-- Live Camera Feed Background -->
     <video id="webcam" autoplay playsinline></video>
 
     <!-- AR HUD Overlay -->
     <div id="hud">
         <div class="box">
-            <h3>E.D.I.T.H. AI CORE</h3>
-            <p id="sys-status">STATUS: INITIALIZING SYSTEM...</p>
+            <h3>E.D.I.T.H. MASTER CONTROL</h3>
+            <p id="sys-status">STATUS: STANDALONE AI ONLINE</p>
         </div>
         <div class="box">
             <p id="voice-status">VOICE: LISTENING...</p>
@@ -63,15 +64,15 @@
         const sysStatus = document.getElementById('sys-status');
         const voiceStatus = document.getElementById('voice-status');
 
-        // 1. Initialize Camera Feed
+        // 1. Initialize Camera Feed for Mobile HTTPS / WebCam
         async function initCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 document.getElementById('webcam').srcObject = stream;
-                sysStatus.innerText = "STATUS: CAMERA ONLINE";
+                sysStatus.innerText = "STATUS: CAMERA FEED SECURED";
             } catch (err) {
                 console.error("Camera access error:", err);
-                sysStatus.innerText = "STATUS: CAMERA BLOCKED";
+                sysStatus.innerText = "STATUS: CAMERA ACCESS DENIED";
             }
         }
         initCamera();
@@ -88,43 +89,46 @@
             }
         }
 
-        // 3. Native AI Brain & Intent Engine (Runs Locally)
+        // 3. Standalone AI Brain & Problem-Solving Engine
         function processAIBrain(command) {
             const text = command.toLowerCase();
             let responseText = "Command acknowledged, Chandresh.";
 
             sysStatus.innerText = `ANALYZING: "${command.toUpperCase()}"`;
 
-            // Intent Matching Rules
+            // Core Intent & Problem Solving Modules
             if (text.includes("status") || text.includes("diagnostics")) {
-                responseText = "All systems operational. Camera feed online. Security protocols nominal.";
+                responseText = "All systems operational. Standalone neural network nominal. Security protocols active.";
             } 
             else if (text.includes("time") || text.includes("date")) {
                 const now = new Date();
-                responseText = `Current system time is ${now.toLocaleTimeString()}.`;
+                responseText = `System clock synchronized. Current time is ${now.toLocaleTimeString()}.`;
             } 
             else if (text.includes("code") || text.includes("python") || text.includes("javascript")) {
-                responseText = "Neural code parser active. Ready to evaluate syntax algorithms.";
+                responseText = "Code analysis module online. Syntax verification engine standing by.";
             } 
+            else if (text.includes("calculate") || text.includes("math")) {
+                responseText = "Calculator utility active. Input numerical parameters for evaluation.";
+            }
             else if (text.includes("protocol") || text.includes("emergency")) {
-                responseText = "Emergency override protocol acknowledged. Standing by for authorization.";
+                responseText = "Emergency override protocol acknowledged. Access control locked.";
             } 
             else if (text.includes("hello") || text.includes("hi")) {
-                responseText = "Hello Chandresh. E.D.I.T.H. systems are fully online and ready.";
+                responseText = "Hello Chandresh. E.D.I.T.H. systems are fully online.";
             } 
             else {
-                responseText = `Command processed: ${command}. Executing localized routine.`;
+                responseText = `Processing query: ${command}. Standalone reasoning sequence complete.`;
             }
 
-            // Update HUD and speak response
+            // Update HUD UI and execute voice response
             setTimeout(() => {
                 sysStatus.innerText = `E.D.I.T.H.: ${responseText}`;
                 voiceStatus.innerText = "VOICE: LISTENING...";
                 speak(responseText);
-            }, 400);
+            }, 300);
         }
 
-        // 4. Speech Recognition (Your Voice Input)
+        // 4. Continuous Voice Recognition Engine
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
@@ -134,7 +138,7 @@
 
             recognition.onresult = (event) => {
                 const transcript = event.results[event.results.length - 1][0].transcript.trim();
-                console.log("User Command:", transcript);
+                console.log("Voice Command Captured:", transcript);
                 processAIBrain(transcript);
             };
 
@@ -144,15 +148,15 @@
 
             recognition.onend = () => {
                 try {
-                    recognition.start();
+                    recognition.start(); // Keep continuous loop active
                 } catch (e) {
-                    console.log("Recognition restart managed.");
+                    console.log("Recognition loop active.");
                 }
             };
 
             recognition.start();
         } else {
-            voiceStatus.innerText = "VOICE API NOT SUPPORTED";
+            voiceStatus.innerText = "SPEECH API NOT SUPPORTED";
         }
     </script>
 </body>
