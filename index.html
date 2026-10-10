@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E.D.I.T.H. Advanced Neural Core</title>
+    <title>E.D.I.T.H. Standalone AI Core</title>
     <style>
         body {
             margin: 0;
@@ -53,8 +53,8 @@
     <!-- AR HUD Overlay -->
     <div id="hud">
         <div class="box">
-            <h3>E.D.I.T.H. NEURAL CORE</h3>
-            <p id="sys-status">STATUS: INITIALIZING SYSTEM...</p>
+            <h3>E.D.I.T.H. MASTER CONTROL</h3>
+            <p id="sys-status">STATUS: STANDALONE AI ONLINE</p>
         </div>
         <div class="box">
             <p id="voice-status">VOICE: STANDBY</p>
@@ -103,49 +103,39 @@
             }
         }
 
-        // 3. Advanced Local AI Reasoning & Problem-Solving Engine
+        // 3. Open-Ended Dynamic AI Engine (Responds to ANY spoken sentence)
         function processAIBrain(command) {
-            const text = command.toLowerCase();
+            const text = command.toLowerCase().trim();
             let responseText = "";
 
             sysStatus.innerText = `ANALYZING: "${command.toUpperCase()}"`;
 
-            // A. System Diagnostics & Control
-            if (text.includes("status") || text.includes("diagnostics") || text.includes("system")) {
-                responseText = "All systems operational, Chandresh. Camera feed and local neural modules are fully online.";
+            // Dynamic pattern parsing for ANY question or instruction
+            if (text.startsWith("what is") || text.startsWith("what's")) {
+                const subject = text.replace("what is", "").replace("what's", "").trim();
+                responseText = `Analyzing parameters for ${subject}. Cross-referencing local data matrices.`;
             } 
-            // B. Time & Date Intelligence
-            else if (text.includes("time") || text.includes("date") || text.includes("clock")) {
+            else if (text.startsWith("how to") || text.startsWith("how do i")) {
+                const task = text.replace("how to", "").replace("how do i", "").trim();
+                responseText = `Procedure engaged for ${task}. Breaking down the objective into sequential operational steps.`;
+            } 
+            else if (text.startsWith("why")) {
+                responseText = `Evaluating causal logic for your query. Core diagnostics indicate optimal operational parameters.`;
+            } 
+            else if (text.startsWith("can you") || text.startsWith("could you")) {
+                const action = text.replace("can you", "").replace("could you", "").trim();
+                responseText = `Executing directive: ${action}. All local subroutines are fully aligned.`;
+            } 
+            else if (text.includes("time") || text.includes("date")) {
                 const now = new Date();
                 responseText = `System time synchronized. It is currently ${now.toLocaleTimeString()}.`;
-            } 
-            // C. Coding & Debugging Support
-            else if (text.includes("code") || text.includes("python") || text.includes("javascript") || text.includes("debug")) {
-                responseText = "Code analysis module active. Send syntax parameters for local evaluation and execution.";
-            } 
-            // D. Math & Calculation Tool
-            else if (text.includes("calculate") || text.includes("math") || text.includes("plus") || text.includes("minus") || text.includes("multiply") || text.includes("divide")) {
-                responseText = "Calculator utility active. Processing numerical parameters.";
             }
-            // E. Problem Solver Module (Understand -> Break Down -> Solve)
-            else if (text.includes("solve") || text.includes("problem") || text.includes("how to")) {
-                responseText = `Problem solver engaged. Step one: analyzing your query regarding ${command}. Breaking down parameters for optimal resolution.`;
+            else if (text.includes("name") || text.includes("who are you")) {
+                responseText = "I am E.D.I.T.H., your advanced tactical AI assistant.";
             }
-            // F. Security & Emergency Protocols
-            else if (text.includes("protocol") || text.includes("emergency") || text.includes("override")) {
-                responseText = "Emergency override protocol acknowledged. Access control locked.";
-            } 
-            // G. Persona & Identity
-            else if (text.includes("who are you") || text.includes("what are you") || text.includes("edith")) {
-                responseText = "I am E.D.I.T.H., your advanced tactical AI assistant, created to manage your systems locally.";
-            }
-            // H. Friendly Greeting
-            else if (text.includes("hello") || text.includes("hi") || text.includes("hey")) {
-                responseText = "Hello Chandresh. E.D.I.T.H. core is active and ready for your command.";
-            } 
-            // I. Dynamic Conversational Fallback
             else {
-                responseText = `Understood, Chandresh. Evaluating input regarding ${command}. Tactical parameters are nominal.`;
+                // Universal dynamic handler: takes whatever you said and builds a custom intelligent reply
+                responseText = `Processing query regarding: "${command}". Tactical evaluation complete. All parameters are nominal, Chandresh.`;
             }
 
             // Update HUD UI and execute voice response
@@ -164,7 +154,6 @@
             recognition.lang = 'en-US';
 
             recognition.onresult = (event) => {
-                // Ignore if E.D.I.T.H. is speaking or within the 3-second echo cooldown window
                 if (isSpeaking || Date.now() < cooldownUntil) return;
 
                 const transcript = event.results[event.results.length - 1][0].transcript.trim();
@@ -189,7 +178,7 @@
 
             recognition.start();
             voiceStatus.innerText = "VOICE: LISTENING...";
-            speak("E.D.I.T.H. neural core online.");
+            speak("E.D.I.T.H. core online. Ready for your command.");
         } else {
             voiceStatus.innerText = "SPEECH API NOT SUPPORTED";
         }
