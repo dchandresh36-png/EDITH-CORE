@@ -89,35 +89,36 @@
             }
         }
 
-        // 3. Standalone AI Brain & Problem-Solving Engine
+        // 3. Standalone AI Brain & Problem-Solving Engine (Natural Speech Version)
         function processAIBrain(command) {
             const text = command.toLowerCase();
-            let responseText = "Command acknowledged, Chandresh.";
+            let responseText = "";
 
             sysStatus.innerText = `ANALYZING: "${command.toUpperCase()}"`;
 
-            // Core Intent & Problem Solving Modules
+            // Core Intent & Command Triggers
             if (text.includes("status") || text.includes("diagnostics")) {
-                responseText = "All systems operational. Standalone neural network nominal. Security protocols active.";
+                responseText = "All systems operational, Chandresh. Camera feed and neural links are fully online.";
             } 
             else if (text.includes("time") || text.includes("date")) {
                 const now = new Date();
-                responseText = `System clock synchronized. Current time is ${now.toLocaleTimeString()}.`;
+                responseText = `System time synchronized. It is currently ${now.toLocaleTimeString()}.`;
             } 
             else if (text.includes("code") || text.includes("python") || text.includes("javascript")) {
-                responseText = "Code analysis module online. Syntax verification engine standing by.";
+                responseText = "Code analysis module active. Standing by for syntax debugging and execution.";
             } 
             else if (text.includes("calculate") || text.includes("math")) {
-                responseText = "Calculator utility active. Input numerical parameters for evaluation.";
+                responseText = "Calculator utility active. Provide your numerical parameters.";
             }
             else if (text.includes("protocol") || text.includes("emergency")) {
                 responseText = "Emergency override protocol acknowledged. Access control locked.";
             } 
-            else if (text.includes("hello") || text.includes("hi")) {
-                responseText = "Hello Chandresh. E.D.I.T.H. systems are fully online.";
+            else if (text.includes("hello") || text.includes("hi") || text.includes("hey edith")) {
+                responseText = "Hello Chandresh. E.D.I.T.H. core is active and ready for your command.";
             } 
             else {
-                responseText = `Processing query: ${command}. Standalone reasoning sequence complete.`;
+                // Dynamic fallback for smooth conversational responses
+                responseText = `Understood, Chandresh. Analyzing your input regarding ${command}. Parameters are nominal.`;
             }
 
             // Update HUD UI and execute voice response
