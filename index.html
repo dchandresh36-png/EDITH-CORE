@@ -63,6 +63,8 @@
     <script>
         const sysStatus = document.getElementById('sys-status');
         const voiceStatus = document.getElementById('voice-status');
+        let recognition;
+        let isSpeaking = false; // Prevents the feedback loop
 
         // 1. Initialize Camera Feed for Mobile HTTPS / WebCam
         async function initCamera() {
@@ -77,7 +79,7 @@
         }
         initCamera();
 
-        // 2. Text-to-Speech Output (E.D.I.T.H.'s Voice)
+        // 2. Text-to-Speech Output with Feedback Protection
         function speak(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -85,11 +87,20 @@
                 speech.lang = 'en-US';
                 speech.rate = 1.05;
                 speech.pitch = 0.95;
+
+                isSpeaking = true; // Lock listening while talking
+                voiceStatus.innerText = "VOICE: SPEAKING...";
+
+                speech.onend = () => {
+                    isSpeaking = false; // Unlock listening after she finishes
+                    voiceStatus.innerText = "VOICE: LISTENING...";
+                };
+
                 window.speechSynthesis.speak(speech);
             }
         }
 
-        // 3. Standalone AI Brain & Problem-Solving Engine (Natural Speech Version)
+        // 3. Standalone AI Brain & Problem-Solving Engine
         function processAIBrain(command) {
             const text = command.toLowerCase();
             let responseText = "";
@@ -117,27 +128,28 @@
                 responseText = "Hello Chandresh. E.D.I.T.H. core is active and ready for your command.";
             } 
             else {
-                // Dynamic fallback for smooth conversational responses
                 responseText = `Understood, Chandresh. Analyzing your input regarding ${command}. Parameters are nominal.`;
             }
 
             // Update HUD UI and execute voice response
             setTimeout(() => {
                 sysStatus.innerText = `E.D.I.T.H.: ${responseText}`;
-                voiceStatus.innerText = "VOICE: LISTENING...";
                 speak(responseText);
             }, 300);
         }
 
-        // 4. Continuous Voice Recognition Engine
+        // 4. Continuous Voice Recognition Engine with Loop Prevention
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
+            recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = false;
             recognition.lang = 'en-US';
 
             recognition.onresult = (event) => {
+                // Ignore audio input if E.D.I.T.H. is currently speaking
+                if (isSpeaking) return;
+
                 const transcript = event.results[event.results.length - 1][0].transcript.trim();
                 console.log("Voice Command Captured:", transcript);
                 processAIBrain(transcript);
@@ -149,7 +161,10 @@
 
             recognition.onend = () => {
                 try {
-                    recognition.start(); // Keep continuous loop active
+                    // Only restart if she is not currently speaking
+                    if (!isSpeaking) {
+                        recognition.start();
+                    }
                 } catch (e) {
                     console.log("Recognition loop active.");
                 }
