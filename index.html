@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E.D.I.T.H. Standalone AI Core</title>
+    <title>E.D.I.T.H. True In-Browser AI</title>
     <style>
         body {
             margin: 0;
@@ -25,6 +25,7 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 20px;
+            z-index: 10;
         }
         video {
             position: absolute;
@@ -39,7 +40,7 @@
             border: 1px solid #00ffff;
             padding: 12px;
             background: rgba(0, 255, 255, 0.05);
-            max-width: 380px;
+            max-width: 400px;
             box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
         }
     </style>
@@ -52,35 +53,37 @@
     <!-- AR HUD Overlay -->
     <div id="hud">
         <div class="box">
-            <h3>E.D.I.T.H. MASTER CONTROL</h3>
-            <p id="sys-status">STATUS: STANDALONE AI ONLINE</p>
+            <h3>E.D.I.T.H. NEURAL CORE</h3>
+            <p id="sys-status">STATUS: LOADING IN-BROWSER LLM...</p>
         </div>
         <div class="box">
-            <p id="voice-status">VOICE: LISTENING...</p>
+            <p id="voice-status">VOICE: STANDBY</p>
         </div>
     </div>
 
-    <script>
+    <!-- Import WebLLM Engine via ESM CDN -->
+    <script type="module">
+        import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
+
         const sysStatus = document.getElementById('sys-status');
         const voiceStatus = document.getElementById('voice-status');
+        let engine;
         let recognition;
         let isSpeaking = false;
-        let cooldownUntil = 0; // Blocks echo immediately after speech ends
+        let cooldownUntil = 0;
 
         // 1. Initialize Camera Feed
         async function initCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 document.getElementById('webcam').srcObject = stream;
-                sysStatus.innerText = "STATUS: CAMERA FEED SECURED";
             } catch (err) {
                 console.error("Camera access error:", err);
-                sysStatus.innerText = "STATUS: CAMERA ACCESS DENIED";
             }
         }
         initCamera();
 
-        // 2. Text-to-Speech Output with Cooldown Buffer
+        // 2. Text-to-Speech Output with Echo Protection
         function speak(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -94,8 +97,7 @@
 
                 speech.onend = () => {
                     isSpeaking = false;
-                    // Keep a 3-second buffer to swallow lingering speaker echo on laptops
-                    cooldownUntil = Date.now() + 3000; 
+                    cooldownUntil = Date.now() + 3000; // 3-second buffer to ignore speaker echo
                     voiceStatus.innerText = "VOICE: LISTENING...";
                 };
 
@@ -103,77 +105,91 @@
             }
         }
 
-        // 3. Standalone AI Brain & Problem-Solving Engine
-        function processAIBrain(command) {
-            const text = command.toLowerCase();
-            let responseText = "";
-
-            sysStatus.innerText = `ANALYZING: "${command.toUpperCase()}"`;
-
-            if (text.includes("status") || text.includes("diagnostics")) {
-                responseText = "All systems operational, Chandresh. Camera feed and neural links are fully online.";
-            } 
-            else if (text.includes("time") || text.includes("date")) {
-                const now = new Date();
-                responseText = `System time synchronized. It is currently ${now.toLocaleTimeString()}.`;
-            } 
-            else if (text.includes("code") || text.includes("python") || text.includes("javascript")) {
-                responseText = "Code analysis module active. Standing by for syntax debugging and execution.";
-            } 
-            else if (text.includes("calculate") || text.includes("math")) {
-                responseText = "Calculator utility active. Provide your numerical parameters.";
-            }
-            else if (text.includes("protocol") || text.includes("emergency")) {
-                responseText = "Emergency override protocol acknowledged. Access control locked.";
-            } 
-            else if (text.includes("hello") || text.includes("hi") || text.includes("hey edith")) {
-                responseText = "Hello Chandresh. E.D.I.T.H. core is active and ready for your command.";
-            } 
-            else {
-                responseText = `Understood, Chandresh. Analyzing your input regarding ${command}. Parameters are nominal.`;
-            }
-
-            setTimeout(() => {
-                sysStatus.innerText = `E.D.I.T.H.: ${responseText}`;
-                speak(responseText);
-            }, 300);
-        }
-
-        // 4. Voice Recognition with Cooldown Check
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = false;
-            recognition.lang = 'en-US';
-
-            recognition.onresult = (event) => {
-                // Ignore if currently speaking OR if we are inside the 3-second echo cooldown window
-                if (isSpeaking || Date.now() < cooldownUntil) return;
-
-                const transcript = event.results[event.results.length - 1][0].transcript.trim();
-                console.log("Voice Command Captured:", transcript);
-                processAIBrain(transcript);
-            };
-
-            recognition.onerror = (event) => {
-                console.warn("Speech Recognition Error:", event.error);
-            };
-
-            recognition.onend = () => {
-                try {
-                    if (!isSpeaking && Date.now() >= cooldownUntil) {
-                        recognition.start();
+        // 3. Initialize True In-Browser LLM Brain (Llama 3.2 1B Model)
+        async function initLLM() {
+            try {
+                sysStatus.innerText = "LOADING AI MODEL (PLEASE WAIT)...";
+                
+                // Creates a local LLM engine running inside your browser via WebGPU
+                engine = await CreateMLCEngine("Llama-3.2-1B-Instruct-q4f16_1-MLC", {
+                    initProgressCallback: (progress) => {
+                        sysStatus.innerText = `LOADING MODEL: ${(progress.progress * 100).toFixed(0)}%`;
                     }
-                } catch (e) {
-                    console.log("Recognition loop active.");
-                }
-            };
+                });
 
-            recognition.start();
-        } else {
-            voiceStatus.innerText = "SPEECH API NOT SUPPORTED";
+                sysStatus.innerText = "STATUS: LLM NEURAL CORE ONLINE";
+                voiceStatus.innerText = "VOICE: LISTENING...";
+                speak("E.D.I.T.H. neural core is fully online, Chandresh.");
+                
+                startVoiceRecognition();
+            } catch (err) {
+                console.error("LLM Init Error:", err);
+                sysStatus.innerText = "ERROR: WEBGPU NOT SUPPORTED";
+                speak("Hardware acceleration error.");
+            }
         }
+
+        // 4. Process Voice Command through Real LLM
+        async function processAIBrain(command) {
+            try {
+                sysStatus.innerText = `PROCESSING: "${command.toUpperCase()}"`;
+
+                const reply = await engine.chat.completions.create({
+                    messages: [
+                        { role: "system", content: "You are E.D.I.T.H., an advanced tactical AI assistant created by Tony Stark. Keep your responses concise, sharp, intelligent, and tailored for tech or tactical problem solving." },
+                        { role: "user", content: command }
+                    ]
+                });
+
+                const aiReply = reply.choices[0].message.content.trim();
+                sysStatus.innerText = `E.D.I.T.H.: ${aiReply}`;
+                speak(aiReply);
+            } catch (err) {
+                console.error("AI Generation Error:", err);
+                sysStatus.innerText = "PROCESSING ERROR";
+                speak("Neural computation failed.");
+            }
+        }
+
+        // 5. Continuous Voice Recognition Engine
+        function startVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+
+                recognition.onresult = (event) => {
+                    if (isSpeaking || Date.now() < cooldownUntil) return;
+
+                    const transcript = event.results[event.results.length - 1][0].transcript.trim();
+                    console.log("Voice Command Captured:", transcript);
+                    processAIBrain(transcript);
+                };
+
+                recognition.onerror = (event) => {
+                    console.warn("Speech Recognition Error:", event.error);
+                };
+
+                recognition.onend = () => {
+                    try {
+                        if (!isSpeaking && Date.now() >= cooldownUntil) {
+                            recognition.start();
+                        }
+                    } catch (e) {
+                        console.log("Recognition loop active.");
+                    }
+                };
+
+                recognition.start();
+            } else {
+                voiceStatus.innerText = "SPEECH API NOT SUPPORTED";
+            }
+        }
+
+        // Boot up the system
+        initLLM();
     </script>
 </body>
 </html>
