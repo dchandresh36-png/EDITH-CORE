@@ -3,28 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E.D.I.T.H. Ultimate Core</title>
-    <!-- Link to separate CSS file -->
+    <title>E.D.I.T.H. Advanced Tactical Core v3.0</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Live Camera Feed Background -->
-    <video id="webcam" autoplay playsinline></video>
+    <!-- Live Camera Feed Background Stream -->
+    <video id="webcam" autoplay playsinline muted></video>
 
-    <!-- AR HUD Overlay -->
-    <div id="hud">
-        <div class="box">
-            <h3>E.D.I.T.H. MASTER CONTROL</h3>
-            <p id="sys-status">STATUS: MULTILINGUAL & CODING CORES ONLINE</p>
-        </div>
-        <div class="box">
-            <p id="voice-status">VOICE: STANDBY</p>
-            <p id="learning-status" style="font-size: 11px; color: #00ffaa;">SELF-IMPROVEMENT: ACTIVE (0 OPTIMIZATIONS)</p>
-        </div>
+    <!-- Cyberpunk AR HUD Overlay Container -->
+    <div id="hud-container">
+        
+        <!-- Top Navigation & System Telemetry Bar -->
+        <header class="hud-header">
+            <div class="hud-badge">E.D.I.T.H. // MASTER CONTROL</div>
+            <div class="hud-clock" id="system-clock">00:00:00</div>
+            <div class="hud-status-indicator" id="top-status">ONLINE</div>
+        </header>
+
+        <!-- Left Tactical Control Panel -->
+        <aside class="hud-panel left-panel">
+            <div class="panel-header">>>> SYSTEM DIAGNOSTICS</div>
+            <div class="panel-body">
+                <p><strong>Neural Link:</strong> <span id="diag-neural">ACTIVE</span></p>
+                <p><strong>Camera Stream:</strong> <span id="diag-camera">SECURED</span></p>
+                <p><strong>Speech Engine:</strong> <span id="diag-speech">LISTENING</span></p>
+                <p><strong>Locale Matrix:</strong> <span id="diag-locale">AUTO-DETECT</span></p>
+            </div>
+            <div class="panel-header">>>> CODING SUITE</div>
+            <div class="panel-body">
+                <p>Python / Java / C++ / JS</p>
+                <p class="sub-text">Status: Expert Parsing Ready</p>
+            </div>
+        </aside>
+
+        <!-- Center Reticle & Targeting Display -->
+        <main class="hud-center">
+            <div class="targeting-reticle">
+                <div class="reticle-ring"></div>
+                <div class="reticle-crosshair"></div>
+            </div>
+            <div class="transcript-box">
+                <p id="sys-status">STATUS: INITIALIZING MULTILINGUAL NEURAL NET...</p>
+            </div>
+        </main>
+
+        <!-- Right Self-Improvement & Multilingual Panel -->
+        <aside class="hud-panel right-panel">
+            <div class="panel-header">>>> SELF-IMPROVEMENT</div>
+            <div class="panel-body">
+                <p id="learning-status">Optimizations: 0</p>
+                <p id="mutation-log">State: Stable Baseline</p>
+            </div>
+            <div class="panel-header">>>> MULTILINGUAL (50+)</div>
+            <div class="panel-body">
+                <p>Global Dialect Routing</p>
+                <p class="sub-text">Dynamic Translation Active</p>
+            </div>
+        </aside>
+
+        <!-- Bottom Audio & Command Response Bar -->
+        <footer class="hud-footer">
+            <div class="status-box" id="voice-status">VOICE: STANDBY</div>
+            <div class="command-box" id="last-command">Awaiting Input...</div>
+        </footer>
+
     </div>
 
-    <!-- Link to separate JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>
