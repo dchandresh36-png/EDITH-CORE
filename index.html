@@ -27,13 +27,13 @@
             <div class="panel-body">
                 <p><strong>Neural Link:</strong> <span id="diag-neural">ACTIVE</span></p>
                 <p><strong>Camera Stream:</strong> <span id="diag-camera">SECURED</span></p>
-                <p><strong>Speech Engine:</strong> <span id="diag-speech">LISTENING</span></p>
+                <p><strong>Speech Engine:</strong> <span id="diag-speech">STANDBY</span></p>
                 <p><strong>Locale Matrix:</strong> <span id="diag-locale">AUTO-DETECT</span></p>
             </div>
-            <div class="panel-header">>>> CODING SUITE</div>
+            <div class="panel-header">>>> MANUAL OVERRIDE</div>
             <div class="panel-body">
-                <p>Python / Java / C++ / JS</p>
-                <p class="sub-text">Status: Expert Parsing Ready</p>
+                <!-- Clickable button to force microphone activation -->
+                <button id="mic-btn" style="background: rgba(0,255,255,0.2); border: 1px solid #00ffff; color: #00ffff; padding: 6px 12px; cursor: pointer; font-family: monospace; width: 100%; margin-top: 5px;">[ ACTIVATE MIC ]</button>
             </div>
         </aside>
 
@@ -44,7 +44,7 @@
                 <div class="reticle-crosshair"></div>
             </div>
             <div class="transcript-box">
-                <p id="sys-status">STATUS: INITIALIZING MULTILINGUAL NEURAL NET...</p>
+                <p id="sys-status">STATUS: CLICK [ACTIVATE MIC] TO SPEAK</p>
             </div>
         </main>
 
@@ -64,7 +64,7 @@
 
         <!-- Bottom Audio & Command Response Bar -->
         <footer class="hud-footer">
-            <div class="status-box" id="voice-status">VOICE: STANDBY</div>
+            <div class="status-box" id="voice-status">VOICE: READY</div>
             <div class="command-box" id="last-command">Awaiting Input...</div>
         </footer>
 
