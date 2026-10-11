@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+    background-color: #000;
+    color: #00ffff;
+    font-family: monospace;
+    overflow: hidden;
+}
+
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+    border: 2px solid #00ffff55;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    z-index: 10;
+}
+
+video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.box {
+    border: 1px solid #00ffff;
+    padding: 12px;
+    background: rgba(0, 255, 255, 0.05);
+    max-width: 420px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}

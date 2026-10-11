@@ -3,47 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E.D.I.T.H. Multilingual Core</title>
-    <style>
-        body {
-            margin: 0;
-            background-color: #000;
-            color: #00ffff;
-            font-family: monospace;
-            overflow: hidden;
-        }
-        #hud {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            box-sizing: border-box;
-            border: 2px solid #00ffff55;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-            z-index: 10;
-        }
-        video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: -1;
-        }
-        .box {
-            border: 1px solid #00ffff;
-            padding: 12px;
-            background: rgba(0, 255, 255, 0.05);
-            max-width: 400px;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-        }
-    </style>
+    <title>E.D.I.T.H. Ultimate Core</title>
+    <!-- Link to separate CSS file -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -54,114 +16,15 @@
     <div id="hud">
         <div class="box">
             <h3>E.D.I.T.H. MASTER CONTROL</h3>
-            <p id="sys-status">STATUS: MULTILINGUAL CORE ONLINE</p>
+            <p id="sys-status">STATUS: MULTILINGUAL & CODING CORES ONLINE</p>
         </div>
         <div class="box">
             <p id="voice-status">VOICE: STANDBY</p>
+            <p id="learning-status" style="font-size: 11px; color: #00ffaa;">SELF-IMPROVEMENT: ACTIVE (0 OPTIMIZATIONS)</p>
         </div>
     </div>
 
-    <script>
-        const sysStatus = document.getElementById('sys-status');
-        const voiceStatus = document.getElementById('voice-status');
-        let recognition;
-        let isSpeaking = false;
-        let cooldownUntil = 0;
-
-        // 1. Initialize Camera Feed
-        async function initCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                document.getElementById('webcam').srcObject = stream;
-                sysStatus.innerText = "STATUS: CAMERA FEED SECURED";
-            } catch (err) {
-                console.error("Camera access error:", err);
-                sysStatus.innerText = "STATUS: CAMERA ACCESS DENIED";
-            }
-        }
-        initCamera();
-
-        // 2. Text-to-Speech Output with Echo Protection
-        function speak(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const speech = new SpeechSynthesisUtterance(text);
-                // Automatically match the device's speech synthesis locale
-                speech.lang = navigator.language || 'en-US';
-                speech.rate = 1.05;
-                speech.pitch = 0.95;
-
-                isSpeaking = true;
-                voiceStatus.innerText = "VOICE: SPEAKING...";
-
-                speech.onend = () => {
-                    isSpeaking = false;
-                    cooldownUntil = Date.now() + 3000; // 3-second buffer to swallow speaker echo
-                    voiceStatus.innerText = "VOICE: LISTENING...";
-                };
-
-                window.speechSynthesis.speak(speech);
-            }
-        }
-
-        // 3. Universal Open-Ended AI Engine
-        function processAIBrain(command) {
-            const text = command.trim();
-            let responseText = "";
-
-            sysStatus.innerText = `HEARD: "${text.toUpperCase()}"`;
-
-            if (text.length > 0) {
-                responseText = `Acknowledged, Chandresh. Processing input: "${text}". Parameters are nominal.`;
-            } else {
-                responseText = "Standing by for your command, Chandresh.";
-            }
-
-            setTimeout(() => {
-                sysStatus.innerText = `E.D.I.T.H.: ${responseText}`;
-                speak(responseText);
-            }, 300);
-        }
-
-        // 4. Continuous Voice Recognition Engine (Auto-detects device language)
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = false;
-            
-            // Automatically adapt to whatever language your browser/device uses
-            recognition.lang = navigator.language || 'en-US';
-
-            recognition.onresult = (event) => {
-                if (isSpeaking || Date.now() < cooldownUntil) return;
-
-                const transcript = event.results[event.results.length - 1][0].transcript.trim();
-                console.log("Voice Command Captured:", transcript);
-                
-                processAIBrain(transcript);
-            };
-
-            recognition.onerror = (event) => {
-                console.warn("Speech Recognition Error:", event.error);
-            };
-
-            recognition.onend = () => {
-                try {
-                    if (!isSpeaking && Date.now() >= cooldownUntil) {
-                        recognition.start();
-                    }
-                } catch (e) {
-                    console.log("Recognition loop active.");
-                }
-            };
-
-            recognition.start();
-            voiceStatus.innerText = "VOICE: LISTENING...";
-            speak("E.D.I.T.H. multilingual core online.");
-        } else {
-            voiceStatus.innerText = "SPEECH API NOT SUPPORTED";
-        }
-    </script>
+    <!-- Link to separate JavaScript file -->
+    <script src="script.js"></script>
 </body>
 </html>
