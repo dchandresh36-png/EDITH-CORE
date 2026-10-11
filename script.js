@@ -123,7 +123,7 @@ if (SpeechRecognition) {
         voiceStatus.innerText = `VOICE ERROR: ${event.error.toUpperCase()}`;
         
         if (event.error === 'not-allowed') {
-            sysStatus.innerText = "ERROR: MICROPHONE PERMISSION BLOCKED";
+            sysStatus.innerText = "ERROR: MICROPHONE PERMISSION ALLOWED";
         }
     };
 
